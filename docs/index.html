@@ -1,0 +1,1033 @@
+<title>Minimal Technologies</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Minimal Technologies Limited builds mobile apps, web apps and business systems for anyone in Ghana who needs one.">
+<script>try { if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('boot-pending'); } catch (_) {}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap">
+<style>
+/* Layout: the whole site is printed on one wide, tilted sheet of glass. Each page owns a region of it;
+   moving between pages slides the glass sideways, and scrolling slides a page up the glass toward the horizon. */
+:root {
+  --ink: #040a0b;        /* the dark room behind the glass */
+  --line: #3fe8c4;       /* HUD phosphor */
+  --line-hot: #c9fff3;   /* light catching an edge */
+  --text: #d8f6ef;       /* readable copy on glass */
+  --muted: #7ea9a2;      /* secondary readouts */
+  --warm: #ff8a5c;       /* chromatic fringe, used sparingly */
+  --line-a: rgba(63, 232, 196, .55);
+  --line-b: rgba(63, 232, 196, .22);
+  --line-c: rgba(63, 232, 196, .09);
+
+  --f-display: "Michroma", "Eurostile", "Arial Black", sans-serif;
+  --f-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Share Tech Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --rx: 23deg; --ry: -0.75deg; --rz: -1deg; --persp: 1300px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { overflow-x: hidden; overscroll-behavior-x: none; scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--f-body);
+  font-size: 18px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the room ---------- */
+.scene { position: fixed; inset: 0; overflow: hidden; z-index: 1; }
+.backdrop { position: absolute; inset: -10%; pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 70% 30%, rgba(63,232,196,.10), transparent 70%),
+    radial-gradient(30% 25% at 20% 80%, rgba(255,138,92,.06), transparent 70%),
+    radial-gradient(60% 50% at 50% 60%, rgba(10,60,60,.55), transparent 75%),
+    var(--ink);
+  filter: blur(8px);
+}
+
+.grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rig { position: absolute; inset: 0; perspective: var(--persp); perspective-origin: 50% 40%; }
+.plane {
+  position: absolute; left: 50%; top: 50%;
+  width: min(1320px, 96vw); height: 122vh;
+  margin-left: calc(min(1320px, 96vw) / -2); margin-top: -61vh;
+  /* no preserve-3d: everything on the glass is flat, and Chrome mis-hit-tests links inside a preserve-3d sheet */
+  transform-origin: 50% 55%;
+  transform: rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz));
+  will-change: transform;
+}
+
+/* the glass: no tint of its own, so the content sits right on the grid */
+.pane { position: absolute; inset: 0; }
+.beam { position: absolute; pointer-events: none; mix-blend-mode: screen; }
+.beam.v { top: -150%; bottom: 0; width: 2px; left: 0; /* runs up past the top of the window as well as down */
+  background: linear-gradient(180deg, rgba(63,232,196,.35) 0%, rgba(63,232,196,.45) 50%, rgba(201,255,243,.9) 61.5%, rgba(63,232,196,.25) 72%, rgba(63,232,196,.05) 92%, transparent);
+  box-shadow: 0 0 24px 6px rgba(63,232,196,.18);
+  transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+
+/* fixed instruments printed on the glass */
+.frame { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.frame a, .frame button { pointer-events: auto; }
+.topbar { position: absolute; left: 5%; right: 5%; top: 4.5%; display: flex; align-items: center; gap: 28px; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--line-hot); text-decoration: none;
+  font-family: var(--f-display); font-size: 14px; letter-spacing: .18em; line-height: 1.25;
+  text-shadow: 0 0 12px rgba(63,232,196,.6), 0 5px 0 rgba(63,232,196,.2); }
+.brand-mark { width: 30px; height: 30px; border: 2px solid var(--line); position: relative; flex: none;
+  box-shadow: 0 0 14px rgba(63,232,196,.5), 0 5px 0 rgba(63,232,196,.18); }
+.brand-mark::before { content: ""; position: absolute; left: 6px; right: 6px; top: 12px; height: 2px; background: var(--line-hot); }
+.brand small { display: block; font-size: 8px; letter-spacing: .32em; color: var(--muted); text-shadow: none; }
+.brand:focus-visible { outline: 1px solid var(--line-hot); outline-offset: 6px; }
+
+.steps { flex: 1; position: relative; display: flex; justify-content: space-between;
+  border: 1px solid var(--line-a); padding: 0 6px; height: 34px; align-items: stretch;
+  box-shadow: 0 0 14px rgba(63,232,196,.18), 0 7px 0 rgba(63,232,196,.12); }
+.steps a { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 1;
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color .3s; white-space: nowrap; }
+.steps a b { color: var(--line); font-weight: 400; position: relative; z-index: 2; }
+.steps a:hover, .steps a.on { color: var(--line-hot); }
+.steps a.on b { color: var(--ink); }
+.steps a:focus-visible { outline: 1px solid var(--line-hot); outline-offset: -4px; }
+.marker { position: absolute; top: 4px; bottom: 4px; left: 0; width: 0; background: rgba(63,232,196,.18);
+  border-left: 2px solid var(--line-hot); transition: transform .5s cubic-bezier(.2,.7,.2,1), width .5s; }
+.marker::after { content: ""; position: absolute; left: 10px; top: 50%; width: 24px; height: 14px; margin-top: -7px;
+  background: var(--line-hot); box-shadow: 0 0 18px var(--line); }
+
+.readout { position: absolute; font-family: var(--f-mono); font-size: 13px; letter-spacing: .12em; color: var(--muted); line-height: 1.6; }
+.readout b { color: var(--line); font-weight: 400; }
+.readout.l { left: 5%; top: 12%; }
+.readout.r { right: 5%; bottom: 5%; text-align: right; }
+.readout .ghost { color: var(--warm); opacity: .5; }
+.corner { position: absolute; width: 40px; height: 40px; border: 0 solid var(--line); opacity: .8; }
+.corner.tl { left: 2%; top: 2%; border-width: 2px 0 0 2px; }
+.corner.tr { right: 2%; top: 2%; border-width: 2px 2px 0 0; }
+.corner.bl { left: 2%; bottom: 2%; border-width: 0 0 2px 2px; }
+.corner.br { right: 2%; bottom: 2%; border-width: 0 2px 2px 0; }
+
+/* the writing surface: much wider than the screen so pages can slide in from either side */
+.viewport { position: absolute; top: 0; bottom: 0; left: -150%; right: -150%; overflow: clip; z-index: 2;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 12%, #000 22%, #000 86%, transparent 99%);
+          mask-image: linear-gradient(180deg, transparent 0%, transparent 12%, #000 22%, #000 86%, transparent 99%); }
+.track { position: absolute; top: 0; height: 100%; left: 37.5%; width: 25%; }
+.page { position: absolute; top: 0; left: 0; width: 100%; will-change: transform;
+  padding-top: 30vh; padding-bottom: 30vh;
+  padding-left: max(16px, env(safe-area-inset-left, 0px), 4.5%);
+  padding-right: max(16px, env(safe-area-inset-right, 0px), 4.5%);
+  display: flex; flex-direction: column; gap: 150px; }
+[tabindex="-1"]:focus { outline: none; }
+
+/* type on glass */
+.eyebrow { font-family: var(--f-mono); font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--line);
+  display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.eyebrow::before { content: ""; width: 34px; height: 2px; background: var(--line); box-shadow: 0 0 10px var(--line); }
+h1, h2 { font-family: var(--f-display); font-weight: 400; color: var(--line-hot); text-wrap: balance; margin: 0;
+  text-shadow: 0 0 22px rgba(63,232,196,.45), -1px 0 0 rgba(255,138,92,.35), 0 7px 0 rgba(63,232,196,.16), 0 14px 0 rgba(63,232,196,.07); }
+h1 { font-size: clamp(30px, 5.2vw, 64px); line-height: 1.12; letter-spacing: .01em; max-width: 16ch; }
+h2 { font-size: clamp(24px, 3.3vw, 40px); line-height: 1.15; }
+h3 { font-family: var(--f-body); font-weight: 600; font-size: 21px; margin: 0; color: var(--text); letter-spacing: .01em; }
+p { margin: 0; max-width: 62ch; color: var(--text); }
+.lede { font-size: clamp(18px, 1.7vw, 22px); font-weight: 300; color: var(--text); max-width: 62ch; }
+.muted { color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 26px; }
+
+.btns { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn { font-family: var(--f-mono); font-size: 15px; letter-spacing: .16em; text-transform: uppercase; text-decoration: none;
+  padding: 14px 22px; border: 1px solid var(--line); color: var(--line-hot); background: rgba(63,232,196,.06); cursor: pointer;
+  box-shadow: 0 0 16px rgba(63,232,196,.22), 0 6px 0 rgba(63,232,196,.14); transition: background .25s, box-shadow .25s, color .25s; }
+.btn.solid { background: var(--line); color: var(--ink); box-shadow: 0 0 26px rgba(63,232,196,.55), 0 6px 0 rgba(63,232,196,.25); }
+.btn:hover { background: rgba(63,232,196,.2); }
+.btn.solid:hover { background: var(--line-hot); }
+.btn:focus-visible, .copy:focus-visible, a.mod:focus-visible { outline: 2px solid var(--line-hot); outline-offset: 4px; }
+
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0; border-top: 1px solid var(--line-b); border-bottom: 1px solid var(--line-b); margin-top: 18px; }
+.specs div { padding: 14px 18px 14px 0; font-family: var(--f-mono); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-width: 0; }
+.specs div b { display: block; color: var(--line-hot); font-weight: 400; font-size: 16px; letter-spacing: .06em; text-transform: none; font-family: var(--f-body); }
+
+/* readout modules */
+.mods { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 34px 30px; margin-top: 10px; }
+.mod { position: relative; padding: 22px 4px 4px 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; color: inherit; text-decoration: none; }
+.mod::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 12px;
+  border-top: 2px solid var(--line-a); border-left: 2px solid var(--line-a);
+  background: repeating-linear-gradient(90deg, var(--line-b) 0 1px, transparent 1px 22px) 0 2px / 100% 6px no-repeat;
+  box-shadow: 0 6px 0 -4px rgba(63,232,196,.1); transition: border-color .3s; }
+.mod::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(180deg, var(--line-a), transparent 70%); }
+.mod:hover::before { border-color: var(--line-hot); }
+a.mod h3::after { content: " →"; color: var(--line); opacity: 0; transition: opacity .25s; }
+a.mod:hover h3::after { opacity: 1; }
+.tag { font-family: var(--f-mono); font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--line); }
+.mod p { color: var(--muted); font-size: 17px; }
+
+/* bulleted "includes" lists */
+.incl { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px 28px; }
+.incl li { position: relative; padding-left: 22px; font-size: 16px; color: var(--text); min-width: 0; }
+.incl li::before { content: ""; position: absolute; left: 0; top: .72em; width: 11px; height: 2px; background: var(--line); box-shadow: 0 0 8px var(--line); }
+.mod .incl li { color: var(--muted); }
+
+/* services: one row per service */
+.svc-list { display: flex; flex-direction: column; }
+.svc { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 18px 56px;
+  padding: 38px 0 40px; border-top: 1px solid var(--line-b); }
+.svc::before { content: ""; position: absolute; left: 0; top: -1px; width: 64px; height: 2px; background: var(--line); box-shadow: 0 0 12px var(--line); }
+.svc-head { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.svc-head h2 { font-size: clamp(21px, 2.3vw, 30px); }
+.svc-body { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.svc-body .incl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.good { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.good span { font-family: var(--f-body); font-size: 16px; letter-spacing: .02em; text-transform: none; color: var(--text); }
+
+/* principles / reasons */
+.points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 34px 34px; margin-top: 6px; }
+.point { position: relative; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; border-top: 1px solid var(--line-b); min-width: 0; }
+.point::before { content: ""; position: absolute; left: 0; top: -1px; width: 40px; height: 2px; background: var(--line); box-shadow: 0 0 10px var(--line); }
+.point p { color: var(--muted); font-size: 17px; }
+
+/* process: a measuring rule */
+.rule { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; padding-top: 46px; margin-top: 10px; }
+.rule::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; height: 2px; background: var(--line-a);
+  box-shadow: 0 0 12px rgba(63,232,196,.5), 0 8px 0 rgba(63,232,196,.15); }
+.rule::after { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 18px;
+  background: repeating-linear-gradient(90deg, var(--line-b) 0 1px, transparent 1px 18px); }
+.stage { position: relative; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.stage::before { content: ""; position: absolute; left: 0; top: -40px; width: 14px; height: 14px;
+  border: 2px solid var(--line-hot); background: var(--ink); box-shadow: 0 0 14px var(--line); z-index: 1; }
+.stage .n { font-family: var(--f-mono); color: var(--line); font-size: 14px; letter-spacing: .2em; }
+.stage p { color: var(--muted); font-size: 16px; }
+.stage .get { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--line); margin-top: 4px; }
+.stage .get span { display: block; font-family: var(--f-body); font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--text); }
+
+/* label / value rows */
+.lines { display: flex; flex-direction: column; border-top: 1px solid var(--line-b); max-width: 820px; margin-top: 8px; }
+.line { display: grid; grid-template-columns: 170px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line-b); }
+.line .k { font-family: var(--f-mono); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.line .v { font-size: 20px; color: var(--line-hot); overflow-wrap: anywhere; }
+.line .v.sel { user-select: all; }
+.times .line { grid-template-columns: minmax(0, 1fr) auto; }
+.times .line .k { font-family: var(--f-body); font-size: 19px; letter-spacing: .01em; text-transform: none; color: var(--text); }
+.times .line .v { font-family: var(--f-mono); font-size: 18px; letter-spacing: .1em; color: var(--line); font-variant-numeric: tabular-nums; }
+.copy { font-family: var(--f-mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--line);
+  background: transparent; border: 1px solid var(--line-b); padding: 8px 12px; cursor: pointer; }
+.copy:hover { border-color: var(--line); }
+
+/* who we build for */
+.callout { font-family: var(--f-display); font-size: clamp(17px, 1.9vw, 22px); line-height: 1.5; color: var(--line-hot); max-width: 42ch;
+  text-shadow: 0 0 14px rgba(63,232,196,.4), 0 5px 0 rgba(63,232,196,.13); }
+
+/* FAQ */
+.faq { max-width: 900px; border-bottom: 1px solid var(--line-b); }
+.faq details { border-top: 1px solid var(--line-b); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  padding: 18px 0; font-size: 19px; font-weight: 500; color: var(--text); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--f-mono); font-size: 22px; color: var(--line); flex: none; }
+.faq details[open] summary::after { content: "−"; }
+.faq summary:hover { color: var(--line-hot); }
+.faq summary:focus-visible { outline: 2px solid var(--line-hot); outline-offset: 4px; }
+.faq details p { padding: 0 0 20px; color: var(--muted); }
+
+/* contact: brief builder */
+.split { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+.side { display: flex; flex-direction: column; gap: 36px; min-width: 0; }
+.brief { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 26px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; border: 0; padding: 0; margin: 0; }
+.field.full { grid-column: 1 / -1; }
+.field > label, .field > legend { font-family: var(--f-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); padding: 0; }
+.field > legend { margin-bottom: 8px; }
+.field input[type="text"], .field select, .field textarea {
+  font: inherit; font-size: 18px; color: var(--line-hot); width: 100%;
+  background: rgba(63,232,196,.04); border: 1px solid var(--line-b); border-radius: 0; padding: 12px 14px; }
+.field textarea { min-height: 140px; resize: vertical; }
+.field select option { background: var(--ink); color: var(--text); }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--line-hot); outline-offset: 2px; border-color: var(--line); }
+.field ::placeholder { color: var(--muted); opacity: .7; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip span { display: inline-block; padding: 8px 14px; border: 1px solid var(--line-b); font-family: var(--f-mono); font-size: 14px; letter-spacing: .06em; color: var(--text); cursor: pointer; transition: background .2s, border-color .2s; }
+.chip input:checked + span { background: rgba(63,232,196,.18); border-color: var(--line); color: var(--line-hot); box-shadow: 0 0 12px rgba(63,232,196,.25); }
+.chip input:focus-visible + span { outline: 2px solid var(--line-hot); outline-offset: 2px; }
+.form-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.err { color: var(--warm); font-size: 16px; }
+.out { grid-column: 1 / -1; border: 1px solid var(--line-a); padding: 20px; display: flex; flex-direction: column; gap: 14px;
+  background: rgba(63,232,196,.05); box-shadow: 0 0 18px rgba(63,232,196,.15); }
+.out pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--f-mono); font-size: 15px; line-height: 1.6; color: var(--text); }
+.out .copy { align-self: flex-start; }
+.steps-next { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: n; }
+.steps-next li { counter-increment: n; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; color: var(--muted); font-size: 17px; }
+.steps-next li::before { content: counter(n, decimal-leading-zero); font-family: var(--f-mono); color: var(--line); font-size: 14px; padding-top: 3px; }
+
+.page-end { display: flex; flex-direction: column; gap: 46px; }
+.next { align-self: flex-start; }
+footer { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line-c); padding-top: 18px; }
+
+/* lens: film grain, vignette, a touch of blur right at the bottom */
+.dof { position: fixed; left: 0; right: 0; pointer-events: none; z-index: 2; }
+.dof.near { bottom: 0; height: 14%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px);
+  -webkit-mask-image: linear-gradient(0deg, #000, transparent); mask-image: linear-gradient(0deg, #000, transparent); }
+.vignette { position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  background: radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.75) 100%); }
+.grain { position: fixed; inset: -50%; pointer-events: none; z-index: 4; opacity: .09; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 1s steps(6) infinite; }
+@keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-3%)} 60%{transform:translate(-2%,-1%)} 80%{transform:translate(3%,3%)} 100%{transform:translate(0,0)} }
+
+.spacer { height: 400vh; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 6;
+  font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 10px 16px; border: 1px solid var(--line); background: rgba(4,10,11,.9); color: var(--line-hot); }
+
+/* ---------- power-on intro: a streak of light, a cut to dim glass, then everything flickers on ---------- */
+.boot-pending .scene { visibility: hidden; animation: boot-fallback 0s 3s forwards; }
+@keyframes boot-fallback { to { visibility: visible; } }
+.veil { position: fixed; inset: 0; z-index: 7; background: #010303; pointer-events: none;
+  animation: veil .44s step-end both; }
+@keyframes veil { 0% { opacity: 1; } 100% { opacity: 0; } }
+.streak { position: fixed; left: -30vw; width: 160vw; top: 26%; height: max(30px, 5.5vh); z-index: 8; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(63,232,196,.75) 22%, #f2fffd 42%, #ffffff 50%, #f2fffd 58%, rgba(63,232,196,.75) 78%, transparent);
+  box-shadow: 0 0 90px 40px rgba(63,232,196,.45), 0 0 220px 90px rgba(63,232,196,.18);
+  filter: blur(6px); transform: rotate(-11deg);
+  animation: streak .44s step-end both; }
+@keyframes streak {
+  0%   { opacity: 1;   translate: 0 0; }
+  36%  { opacity: 0; }
+  46%  { opacity: 1;   translate: 0 .8vh; }
+  70%  { opacity: .85; translate: 0 1.6vh; }
+  100% { opacity: 0; }
+}
+.booting .scene { animation: scene-on 1.6s step-end .44s both; }
+@keyframes scene-on {
+  0%   { filter: brightness(.3); }
+  12%  { filter: brightness(.55); }
+  18%  { filter: brightness(.22); }
+  30%  { filter: brightness(.65); }
+  38%  { filter: brightness(.4); }
+  55%  { filter: brightness(.85); }
+  64%  { filter: brightness(.6); }
+  80%  { filter: brightness(1); }
+  100% { filter: none; }
+}
+/* one element switching on like a fluorescent tube */
+.flick { animation: flick-on var(--fd, .8s) step-end var(--d, 0s) both; }
+@keyframes flick-on {
+  0%   { opacity: 0; }
+  8%   { opacity: .75; filter: brightness(2); }
+  14%  { opacity: .05; }
+  24%  { opacity: .9;  filter: brightness(1.7); translate: 3px 0; }
+  31%  { opacity: .18; translate: 0 0; }
+  42%  { opacity: 1;   filter: brightness(1.5); }
+  54%  { opacity: .4;  translate: -2px 0; }
+  62%  { opacity: 1;   filter: brightness(1.25); translate: 0 0; }
+  100% { opacity: 1;   filter: none; }
+}
+
+/* tablets: the five-step rule gets cramped */
+@media (max-width: 1100px) {
+  .rule { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 54px; }
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* phones: flatter angle, fewer instruments */
+@media (max-width: 760px) {
+  :root { --rx: 15deg; --ry: 0deg; --rz: -0.5deg; --persp: 950px; }
+  body { font-size: 16px; }
+  .plane { width: 94vw; margin-left: -47vw; height: 118vh; margin-top: -57vh; }
+  .topbar { flex-direction: column; align-items: stretch; gap: 12px; top: 3.5%; left: 6%; right: 6%; }
+  .steps a span { display: none; }
+  .readout.l { display: none; }
+  .readout.r { font-size: 11px; }
+  .page { gap: 110px; padding-top: 30vh; padding-left: max(22px, env(safe-area-inset-left, 0px)); padding-right: max(34px, env(safe-area-inset-right, 0px)); }
+  .rule { grid-template-columns: minmax(0, 1fr); gap: 26px; padding-top: 0; padding-left: 34px; }
+  .rule::before { left: 6px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; box-shadow: 0 0 12px rgba(63,232,196,.5); }
+  .rule::after { display: none; }
+  .stage::before { left: -34px; top: 4px; }
+  .svc { grid-template-columns: minmax(0, 1fr); }
+  .svc-body .incl { grid-template-columns: minmax(0, 1fr); }
+  .brief { grid-template-columns: minmax(0, 1fr); }
+  .line { grid-template-columns: minmax(0, 1fr) auto; }
+  .line .k { grid-column: 1 / -1; }
+  .times .line .k { grid-column: auto; }
+  .corner { width: 26px; height: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+  .marker, .beam.v { transition: none; }
+}
+</style>
+
+<div class="scene" id="scene">
+  <div class="backdrop" aria-hidden="true"></div>
+  <canvas class="grid" id="grid" aria-hidden="true"></canvas>
+  <div class="rig" id="rig">
+    <div class="plane" id="plane">
+      <div class="pane" id="pane">
+        <div class="beam v" id="beam" aria-hidden="true"></div>
+
+        <div class="frame">
+          <div class="topbar">
+            <a class="brand" href="#home" data-nav="home" aria-label="Minimal Technologies home">
+              <span class="brand-mark" aria-hidden="true"></span>
+              <span>MINIMAL<small>TECHNOLOGIES LTD</small></span>
+            </a>
+            <nav class="steps" id="steps" aria-label="Pages">
+              <span class="marker" id="marker" aria-hidden="true"></span>
+              <a href="#home" data-nav="home"><b>01</b><span>Home</span></a>
+              <a href="#services" data-nav="services"><b>02</b><span>Services</span></a>
+              <a href="#industries" data-nav="industries"><b>03</b><span>Industries</span></a>
+              <a href="#process" data-nav="process"><b>04</b><span>Process</span></a>
+              <a href="#about" data-nav="about"><b>05</b><span>About</span></a>
+              <a href="#contact" data-nav="contact"><b>06</b><span>Contact</span></a>
+            </nav>
+          </div>
+          <div class="readout l" aria-hidden="true">
+            SECTOR <b id="r-sector">01/06</b><br>
+            DEPTH&nbsp; <b id="r-depth">0000</b><br>
+            GMT&nbsp;&nbsp;&nbsp; <b id="r-clock">00:00:00</b><br>
+            <span class="ghost">CLASS [01-06]</span>
+          </div>
+          <div class="readout r" aria-hidden="true">
+            MINIMAL TECHNOLOGIES LTD · GH<br>
+            <span class="ghost">SWIPE OR USE ← → TO MOVE</span>
+          </div>
+          <span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span>
+          <span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
+        </div>
+
+        <div class="viewport" id="viewport">
+          <main class="track" id="track">
+
+            <!-- ============ 01 HOME ============ -->
+            <article class="page" id="p-home" data-name="home" data-title="Home" aria-labelledby="h-home">
+              <section>
+                <div class="eyebrow">Minimal Technologies Limited · Ghana</div>
+                <h1 id="h-home">Your idea, built as an app.</h1>
+                <p class="lede">We design, build and look after mobile apps, web apps and business systems for anyone who needs one: shops, schools, startups, churches, NGOs and people with a good idea.</p>
+                <div class="btns">
+                  <a class="btn solid" href="#contact" data-nav="contact">Start a project</a>
+                  <a class="btn" href="#services" data-nav="services">See our services</a>
+                </div>
+                <div class="specs">
+                  <div>Platforms<b>Android · iOS · Web</b></div>
+                  <div>Payments<b>Mobile Money · Card</b></div>
+                  <div>Based in<b>Ghana · GMT+0</b></div>
+                  <div>Works on<b>Phones, laptops, slow data</b></div>
+                </div>
+              </section>
+
+              <section>
+                <div class="eyebrow">What we build</div>
+                <h2>If it runs on a phone or in a browser, we build it.</h2>
+                <div class="mods">
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">Android · iOS</span><h3>Mobile apps</h3><p>Apps for your customers, staff or members, built to keep working when the network drops.</p></a>
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">Browser</span><h3>Web apps &amp; websites</h3><p>Company sites, customer portals and dashboards that load quickly on mobile data.</p></a>
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">Operations</span><h3>Business systems</h3><p>Inventory, point of sale, bookings, school management and staff records in one place.</p></a>
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">GHS · MoMo</span><h3>Payments</h3><p>Take Mobile Money and card payments, send receipts and alert customers by SMS.</p></a>
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">SMS · USSD · APIs</span><h3>Integrations</h3><p>Reach people without smartphones and connect your app to the tools you already use.</p></a>
+                  <a class="mod" href="#services" data-nav="services"><span class="tag">After launch</span><h3>Support &amp; hosting</h3><p>Updates, fixes, backups and hosting, so the app keeps running after release day.</p></a>
+                </div>
+              </section>
+
+              <section>
+                <div class="eyebrow">Why Minimal</div>
+                <h2>Simple software that works where you work.</h2>
+                <div class="points">
+                  <div class="point"><h3>Built for real conditions</h3><p>Our apps handle patchy networks, low-cost Android phones and expensive data, because that is what your users have.</p></div>
+                  <div class="point"><h3>Payments people already use</h3><p>Mobile Money and card payments can be part of your app from day one, with receipts and reports included.</p></div>
+                  <div class="point"><h3>One team, start to finish</h3><p>The people who design your app also build it, launch it and keep it running. You always know who to call.</p></div>
+                </div>
+              </section>
+
+              <section>
+                <p class="callout">Have an idea for an app? Tell us about it and we'll reply with questions, a plan and a quote.</p>
+                <div class="btns">
+                  <a class="btn solid" href="#contact" data-nav="contact">Start a project</a>
+                  <a class="btn" href="#process" data-nav="process">How we work</a>
+                </div>
+              </section>
+            </article>
+
+            <!-- ============ 02 SERVICES ============ -->
+            <article class="page" id="p-services" data-name="services" data-title="Services" aria-labelledby="h-services">
+              <section>
+                <div class="eyebrow">02 · Services</div>
+                <h1 id="h-services">What we build for you.</h1>
+                <p class="lede">Most projects fall into one or more of these. Many combine several, such as a mobile app for customers with a web dashboard for your staff.</p>
+              </section>
+
+              <section class="svc-list" aria-label="Services">
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">Android · iOS</span><h2>Mobile apps</h2></div>
+                  <div class="svc-body">
+                    <p>Apps for Android phones and iPhones. We usually build both from one codebase, which keeps the cost and timeline down without cutting features.</p>
+                    <ul class="incl"><li>Android and iOS apps</li><li>Offline mode that syncs when the network returns</li><li>Push notifications with SMS fallback</li><li>Publishing to Google Play and the App Store</li></ul>
+                    <p class="good">Good for <span>customer apps, staff and field apps, member and community apps</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">Browser</span><h2>Web apps &amp; websites</h2></div>
+                  <div class="svc-body">
+                    <p>Fast websites and web apps that work on any device, including phones on slow connections.</p>
+                    <ul class="incl"><li>Company and product websites</li><li>Customer portals and booking pages</li><li>Admin dashboards and reports</li><li>Domain, hosting and security setup</li></ul>
+                    <p class="good">Good for <span>businesses that need to be found online, and teams that work from laptops</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">Operations</span><h2>Business systems</h2></div>
+                  <div class="svc-body">
+                    <p>Software that replaces paper records, spreadsheets and WhatsApp groups as the way you run your operations.</p>
+                    <ul class="incl"><li>Inventory and stock control</li><li>Point of sale and sales reports</li><li>School fees, results and attendance</li><li>Staff records, payroll and leave</li></ul>
+                    <p class="good">Good for <span>shops, schools, clinics, warehouses and offices</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">GHS · MoMo</span><h2>Payments</h2></div>
+                  <div class="svc-body">
+                    <p>Let people pay inside your app or website with the methods they already use.</p>
+                    <ul class="incl"><li>Mobile Money payments</li><li>Visa and Mastercard payments</li><li>Automatic receipts by SMS and email</li><li>Payment reports and reconciliation</li></ul>
+                    <p class="good">Good for <span>online stores, school fees, church giving and subscriptions</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">SMS · USSD · APIs</span><h2>Integrations</h2></div>
+                  <div class="svc-body">
+                    <p>Reach people who don't have smartphones, and connect your app to the systems you already run.</p>
+                    <ul class="incl"><li>Bulk and transactional SMS</li><li>USSD menus for feature phones</li><li>Maps, location and delivery tracking</li><li>Links to accounting and other software</li></ul>
+                    <p class="good">Good for <span>services with rural users, logistics, and any business with existing software</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">Design</span><h2>UI &amp; UX design</h2></div>
+                  <div class="svc-body">
+                    <p>Screens that are clear on a small phone and easy for first-time users. You can hire us for design only.</p>
+                    <ul class="incl"><li>User research and app structure</li><li>Clickable prototypes</li><li>Visual design in your brand</li><li>Design for small screens and accessibility</li></ul>
+                    <p class="good">Good for <span>new products, and apps that need a redesign</span></p>
+                  </div>
+                </div>
+                <div class="svc">
+                  <div class="svc-head"><span class="tag">After launch</span><h2>Support &amp; hosting</h2></div>
+                  <div class="svc-body">
+                    <p>We stay with you after launch so your app keeps working as your business grows.</p>
+                    <ul class="incl"><li>Bug fixes and security updates</li><li>New features as you grow</li><li>Cloud hosting, backups and monitoring</li><li>Updates for new Android and iOS versions</li></ul>
+                    <p class="good">Good for <span>every app we build, and apps built by others that need a new team</span></p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <p class="callout">Not sure which of these you need? Describe the problem and we'll suggest the simplest fix.</p>
+                <div class="btns"><a class="btn solid" href="#contact" data-nav="contact">Start a project</a></div>
+              </section>
+            </article>
+
+            <!-- ============ 03 INDUSTRIES ============ -->
+            <article class="page" id="p-industries" data-name="industries" data-title="Industries" aria-labelledby="h-industries">
+              <section>
+                <div class="eyebrow">03 · Industries</div>
+                <h1 id="h-industries">Apps for every kind of work.</h1>
+                <p class="lede">We don't limit ourselves to one sector. These are the organisations we build for, and the apps they most often ask for.</p>
+              </section>
+
+              <section aria-label="Industries">
+                <div class="mods">
+                  <div class="mod"><span class="tag">Retail</span><h3>Shops &amp; retail</h3><ul class="incl"><li>Point of sale with Mobile Money</li><li>Stock tracking across branches</li><li>Online store with delivery</li></ul></div>
+                  <div class="mod"><span class="tag">Education</span><h3>Schools</h3><ul class="incl"><li>Fee payments and receipts</li><li>Results and report cards</li><li>Parent app for notices</li></ul></div>
+                  <div class="mod"><span class="tag">Health</span><h3>Clinics &amp; pharmacies</h3><ul class="incl"><li>Appointment booking</li><li>Patient records</li><li>Drug stock and expiry alerts</li></ul></div>
+                  <div class="mod"><span class="tag">Faith</span><h3>Churches &amp; faith groups</h3><ul class="incl"><li>Giving by Mobile Money</li><li>Member directory</li><li>Events and announcements</li></ul></div>
+                  <div class="mod"><span class="tag">Non-profit</span><h3>NGOs &amp; research</h3><ul class="incl"><li>Offline data collection in the field</li><li>Beneficiary registration</li><li>Dashboards for donor reports</li></ul></div>
+                  <div class="mod"><span class="tag">Logistics</span><h3>Delivery &amp; transport</h3><ul class="incl"><li>Order and rider tracking</li><li>Proof of delivery with photos</li><li>Fleet and route records</li></ul></div>
+                  <div class="mod"><span class="tag">Agriculture</span><h3>Farms &amp; agribusiness</h3><ul class="incl"><li>Farmer registration</li><li>Input credit and payments</li><li>Produce collection records</li></ul></div>
+                  <div class="mod"><span class="tag">Hospitality</span><h3>Restaurants &amp; hotels</h3><ul class="incl"><li>Online ordering and booking</li><li>Kitchen order screens</li><li>Loyalty points for regulars</li></ul></div>
+                  <div class="mod"><span class="tag">Startups</span><h3>Founders</h3><ul class="incl"><li>A first version to test your idea</li><li>Demo apps for investors</li><li>Taking over and scaling an app</li></ul></div>
+                  <div class="mod"><span class="tag">Public sector</span><h3>Agencies &amp; assemblies</h3><ul class="incl"><li>Service request portals</li><li>Records and permits</li><li>SMS and USSD access for citizens</li></ul></div>
+                </div>
+              </section>
+
+              <section>
+                <p class="callout">Don't see your field? If people in your work use a phone or a computer, we can build for it.</p>
+                <div class="btns"><a class="btn solid" href="#contact" data-nav="contact">Tell us what you do</a></div>
+              </section>
+            </article>
+
+            <!-- ============ 04 PROCESS ============ -->
+            <article class="page" id="p-process" data-name="process" data-title="Process" aria-labelledby="h-process">
+              <section>
+                <div class="eyebrow">04 · Process</div>
+                <h1 id="h-process">How a project runs.</h1>
+                <p class="lede">A clear path from the first conversation to launch, with something you can see and test at every stage.</p>
+              </section>
+
+              <section aria-label="Project stages">
+                <div class="rule">
+                  <div class="stage"><span class="n">01</span><h3>Brief</h3><p>We meet in person or online to understand your goals, your users and your budget.</p><p class="get">You get<span>A written scope and quote</span></p></div>
+                  <div class="stage"><span class="n">02</span><h3>Design</h3><p>We map the app and design the key screens. You click through a prototype on your own phone.</p><p class="get">You get<span>An approved clickable prototype</span></p></div>
+                  <div class="stage"><span class="n">03</span><h3>Build</h3><p>We build in short cycles and show you progress every week.</p><p class="get">You get<span>Test versions to install and try</span></p></div>
+                  <div class="stage"><span class="n">04</span><h3>Launch</h3><p>We test on real devices, then publish to the app stores or the web.</p><p class="get">You get<span>A live app and admin access</span></p></div>
+                  <div class="stage"><span class="n">05</span><h3>Support</h3><p>We watch for problems, fix issues and add features as you grow.</p><p class="get">You get<span>An ongoing support plan</span></p></div>
+                </div>
+              </section>
+
+              <section>
+                <div class="eyebrow">Typical timelines</div>
+                <h2>How long it takes.</h2>
+                <div class="lines times">
+                  <div class="line"><span class="k">Company website</span><span class="v">2–4 weeks</span></div>
+                  <div class="line"><span class="k">Mobile app or web app</span><span class="v">6–12 weeks</span></div>
+                  <div class="line"><span class="k">Business system or platform</span><span class="v">3–6 months</span></div>
+                </div>
+                <p class="muted">These are typical ranges. Your quote gives dates for your own project.</p>
+              </section>
+
+              <section>
+                <div class="eyebrow">Questions</div>
+                <h2>What clients usually ask.</h2>
+                <div class="faq">
+                  <details><summary>How much does an app cost?</summary><p>It depends on what the app needs to do. After the brief we send a written quote for an agreed scope, so you know the cost before any work starts.</p></details>
+                  <details><summary>Who owns the app when it's finished?</summary><p>You do. Once the project is paid for, the code, the designs and the app store listings belong to you.</p></details>
+                  <details><summary>Can I pay in stages?</summary><p>Yes. Payment is usually split across the stages of the project, so you pay as you see progress.</p></details>
+                  <details><summary>Will you sign a non-disclosure agreement?</summary><p>Yes. We're happy to sign one before you share the details of your idea.</p></details>
+                  <details><summary>Can you work on an app someone else built?</summary><p>Yes. We review the existing code first and tell you honestly whether it's better to fix it or rebuild it.</p></details>
+                  <details><summary>What happens after launch?</summary><p>We offer support plans that cover fixes, updates, hosting and new features. If you'd rather take the code to another team, you can.</p></details>
+                </div>
+              </section>
+            </article>
+
+            <!-- ============ 05 ABOUT ============ -->
+            <article class="page" id="p-about" data-name="about" data-title="About" aria-labelledby="h-about">
+              <section>
+                <div class="eyebrow">05 · About</div>
+                <h1 id="h-about">Minimal by name. Minimal by design.</h1>
+                <p class="lede">Minimal Technologies Limited is a Ghanaian software company. We build apps that do what you need, clearly and reliably, without extra features nobody uses.</p>
+              </section>
+
+              <section>
+                <div class="eyebrow">What minimal means</div>
+                <h2>Four rules we build by.</h2>
+                <div class="points">
+                  <div class="point"><h3>Start small, then grow</h3><p>We launch the core of your app first, then add features based on what your users actually do.</p></div>
+                  <div class="point"><h3>Plain to use</h3><p>If a first-time user needs instructions to use a screen, we redesign the screen.</p></div>
+                  <div class="point"><h3>Built for here</h3><p>We design for local networks, local phones, local payment methods and the way people here work.</p></div>
+                  <div class="point"><h3>Honest advice</h3><p>If you don't need an app, or a cheaper option will do the job, we'll tell you.</p></div>
+                </div>
+              </section>
+
+              <section>
+                <div class="eyebrow">Built in Ghana</div>
+                <h2>A local team for your project.</h2>
+                <p>Working with us means meetings in your time zone, quotes in cedis and support from people who understand your customers.</p>
+                <div class="specs">
+                  <div>Time zone<b>GMT+0</b></div>
+                  <div>Currency<b>Ghana cedi (GHS)</b></div>
+                  <div>Payments<b>Mobile Money · Card</b></div>
+                  <div>Talk to us<b>Phone · WhatsApp · Email</b></div>
+                </div>
+              </section>
+
+              <section>
+                <p class="callout">We'd like to hear what you're working on.</p>
+                <div class="btns"><a class="btn solid" href="#contact" data-nav="contact">Get in touch</a></div>
+              </section>
+            </article>
+
+            <!-- ============ 06 CONTACT ============ -->
+            <article class="page" id="p-contact" data-name="contact" data-title="Contact" aria-labelledby="h-contact">
+              <section>
+                <div class="eyebrow">06 · Contact</div>
+                <h1 id="h-contact">Start a project.</h1>
+                <p class="lede">Tell us what you want to build. Fill in the brief below, or reach us directly by email or WhatsApp.</p>
+              </section>
+
+              <section class="split">
+                <form class="brief" id="brief" novalidate>
+                  <div class="field"><label for="f-name">Your name *</label><input type="text" id="f-name" autocomplete="name"></div>
+                  <div class="field"><label for="f-org">Organisation</label><input type="text" id="f-org" autocomplete="organization" placeholder="Optional"></div>
+                  <div class="field full"><label for="f-contact">Email or phone *</label><input type="text" id="f-contact" autocomplete="email" placeholder="So we can reply"></div>
+                  <fieldset class="field full">
+                    <legend>What do you need?</legend>
+                    <div class="chips">
+                      <label class="chip"><input type="checkbox" name="need" id="n-mobile" value="Mobile app"><span>Mobile app</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-web" value="Web app or website"><span>Web app or website</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-system" value="Business system"><span>Business system</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-pay" value="Payments"><span>Payments</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-sms" value="SMS or USSD"><span>SMS or USSD</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-design" value="Design only"><span>Design only</span></label>
+                      <label class="chip"><input type="checkbox" name="need" id="n-unsure" value="Not sure yet"><span>Not sure yet</span></label>
+                    </div>
+                  </fieldset>
+                  <div class="field"><label for="f-time">When do you need it?</label>
+                    <select id="f-time"><option>As soon as possible</option><option>Within 3 months</option><option>Within 6 months</option><option selected>Flexible</option></select>
+                  </div>
+                  <div class="field"><label for="f-budget">Budget</label><input type="text" id="f-budget" placeholder="Optional, e.g. GHS 30,000"></div>
+                  <div class="field full"><label for="f-about">About the project *</label><textarea id="f-about" placeholder="What should the app do, and who will use it?"></textarea></div>
+                  <div class="form-foot">
+                    <button class="btn solid" type="submit">Prepare my brief</button>
+                    <span class="err" id="f-err" role="alert" hidden></span>
+                  </div>
+                  <div class="out" id="brief-out" hidden>
+                    <p>Your brief is ready. Copy it and send it to us by email or WhatsApp.</p>
+                    <pre id="brief-text"></pre>
+                    <button class="copy" type="button" data-copy="brief-text">Copy brief</button>
+                  </div>
+                </form>
+
+                <div class="side">
+                  <div class="lines">
+                    <div class="line"><span class="k">Email</span><span class="v sel" id="c-email">hello@minimaltech.example</span><button class="copy" type="button" data-copy="c-email">Copy</button></div>
+                    <div class="line"><span class="k">Phone · WhatsApp</span><span class="v sel" id="c-phone">+233 00 000 0000</span><button class="copy" type="button" data-copy="c-phone">Copy</button></div>
+                    <div class="line"><span class="k">Office</span><span class="v">Ghana</span><span></span></div>
+                  </div>
+                  <div>
+                    <div class="eyebrow" style="margin-bottom:18px">What happens next</div>
+                    <ol class="steps-next">
+                      <li>We read your brief and reply with questions.</li>
+                      <li>We meet in person or online to agree on what to build.</li>
+                      <li>You receive a written scope and quote.</li>
+                    </ol>
+                  </div>
+                </div>
+              </section>
+            </article>
+
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dof near" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+</div>
+<div class="veil" id="veil" aria-hidden="true" hidden></div>
+<div class="streak" id="streak" aria-hidden="true" hidden></div>
+<div class="spacer" id="spacer" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const plane = $('plane'), pane = $('pane'), track = $('track'), viewport = $('viewport'), spacer = $('spacer'), rig = $('rig');
+  const pages = [...track.querySelectorAll('.page')];
+  const names = pages.map(p => p.dataset.name);
+  const N = pages.length;
+  const stepLinks = [...document.querySelectorAll('#steps a')];
+  const marker = $('marker'), beam = $('beam');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let paneH = 0, trackW = 0, stride = 0, maxScroll = 0, cur = 0, target = 0;
+  let active = Math.max(0, names.indexOf(location.hash.slice(1)));
+  let panX = 0, anim = null, lockUntil = 0;
+  const ys = pages.map(() => 0);
+  // pointer at the left edge = original slope; centre = nearly straight; right edge = mirrored slope
+  let mx = -.5, my = 0, cmx = -.5, cmy = 0;
+
+  // "Next" link and footer at the end of every page
+  pages.forEach((p, i) => {
+    const end = document.createElement('div');
+    end.className = 'page-end';
+    if (i < N - 1) {
+      const nx = pages[i + 1], a = document.createElement('a');
+      a.className = 'btn next'; a.href = '#' + nx.dataset.name; a.dataset.nav = nx.dataset.name;
+      a.innerHTML = `Next · ${nx.dataset.title} <span aria-hidden="true">→</span>`;
+      end.appendChild(a);
+    }
+    const f = document.createElement('footer');
+    f.innerHTML = '<span>© 2026 Minimal Technologies Limited</span><span>Built in Ghana</span>';
+    end.appendChild(f);
+    p.appendChild(end);
+    const h = p.querySelector('h1'); if (h) h.setAttribute('tabindex', '-1');
+  });
+
+  function offsetIn(el, root) { let t = 0; while (el && el !== root) { t += el.offsetTop; el = el.offsetParent; } return t; }
+
+  function layout() {
+    paneH = pane.clientHeight;
+    trackW = track.clientWidth;
+    stride = trackW * 1.5;                                   // half a glass-width of empty grid between pages
+    if (!anim) panX = active * stride;
+    const p = pages[active];
+    const pb = parseFloat(getComputedStyle(p).paddingBottom) || 0;
+    maxScroll = Math.max(0, p.offsetHeight - pb - paneH * 0.78);
+    spacer.style.height = (maxScroll + innerHeight) + 'px';
+    target = Math.min(scrollY, maxScroll);
+    updateNav();
+  }
+
+  function updateNav() {
+    stepLinks.forEach((a, i) => { a.classList.toggle('on', i === active); if (i === active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    const a = stepLinks[active], nav = $('steps');
+    marker.style.width = a.offsetWidth + 'px';
+    marker.style.transform = `translateX(${a.offsetLeft}px)`;
+    beam.style.transform = `translateX(${nav.offsetLeft + a.offsetLeft + 12 + nav.parentElement.offsetLeft}px)`;
+    $('r-sector').textContent = String(active + 1).padStart(2, '0') + '/' + String(N).padStart(2, '0');
+  }
+
+  function setInert() {
+    pages.forEach((p, i) => {
+      const off = i !== active;
+      p.inert = off;
+      if (off) p.setAttribute('aria-hidden', 'true'); else p.removeAttribute('aria-hidden');
+    });
+  }
+
+  // slide the glass to page i
+  function navigate(i) {
+    if (i < 0 || i >= N || i === active) return;
+    const from = active;
+    ys[from] = cur;
+    active = i; ys[i] = 0; cur = target = 0;
+    setInert();
+    const now = performance.now();
+    if (reduce) { anim = null; panX = i * stride; }
+    else {
+      const dur = Math.min(1500, 850 + 170 * Math.abs(i - from));
+      anim = { from: panX, to: i * stride, t0: now, dur, dir: Math.sign(i - from) };
+      lockUntil = now + dur + 250;
+    }
+    window.scrollTo(0, 0);
+    layout();
+    if (!anim) finishNav();
+  }
+  function finishNav() {
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && !pages[active].contains(ae)) pages[active].querySelector('h1')?.focus({ preventScroll: true });
+  }
+  function go(i) {
+    if (i < 0 || i >= N) return;
+    if (location.hash !== '#' + names[i]) location.hash = names[i];
+    else navigate(i);
+  }
+  addEventListener('hashchange', () => { const i = names.indexOf(location.hash.slice(1)); if (i >= 0) navigate(i); });
+
+  // clicks: page links and copy buttons
+  const toast = msg => { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 1800); };
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-nav]');
+    if (a) {
+      e.preventDefault();
+      const i = names.indexOf(a.dataset.nav);
+      if (i === active) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      else go(i);
+      return;
+    }
+    const c = e.target.closest('[data-copy]');
+    if (c) {
+      const el = $(c.dataset.copy), text = el.textContent.trim();
+      const msg = text.length > 40 ? 'Copied' : 'Copied ' + text;
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Press Ctrl+C or ⌘C to copy'); };
+      try { navigator.clipboard.writeText(text).then(() => toast(msg), fallback); } catch (_) { fallback(); }
+    }
+  });
+
+  // arrow keys, sideways trackpad swipes and touch swipes move across the glass
+  const typing = el => el && el.closest && el.closest('input, textarea, select, [contenteditable]');
+  addEventListener('keydown', e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || typing(e.target)) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); }
+  });
+  let wx = 0, wxTimer = 0;
+  addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) * 1.2) return;
+    const now = performance.now();
+    if (now < lockUntil) { lockUntil = Math.max(lockUntil, now + 200); return; }
+    wx += e.deltaX; clearTimeout(wxTimer); wxTimer = setTimeout(() => { wx = 0; }, 200);
+    if (Math.abs(wx) > 80) { const d = Math.sign(wx); wx = 0; go(active + d); }
+  }, { passive: true });
+  let tx = 0, ty = 0, tt = 0;
+  addEventListener('touchstart', e => { const t = e.touches[0]; tx = t.clientX; ty = t.clientY; tt = performance.now(); }, { passive: true });
+  addEventListener('touchend', e => {
+    if (typing(e.target)) return;
+    const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+    if (performance.now() - tt < 700 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) go(active + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // keep keyboard focus on the visible part of the glass
+  track.addEventListener('focusin', e => {
+    viewport.scrollTop = 0; viewport.scrollLeft = 0;
+    const p = e.target.closest('.page');
+    if (!p || pages.indexOf(p) !== active) return;
+    const y = offsetIn(e.target, p) - paneH * 0.5;
+    window.scrollTo({ top: Math.min(maxScroll, Math.max(0, y)), behavior: 'auto' });
+  });
+
+  addEventListener('scroll', () => { target = Math.min(scrollY, maxScroll); }, { passive: true });
+  addEventListener('resize', () => { gridKey = ''; layout(); });
+  if ('ResizeObserver' in window) { const ro = new ResizeObserver(() => layout()); pages.forEach(p => ro.observe(p)); }
+  addEventListener('pointermove', e => {
+    if (reduce || e.pointerType === 'touch') return;
+    mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5;
+  }, { passive: true });
+
+  // contact brief
+  const form = $('brief');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = id => $(id).value.trim();
+    const missing = [];
+    if (!v('f-name')) missing.push('your name');
+    if (!v('f-contact')) missing.push('an email or phone number');
+    if (!v('f-about')) missing.push('a few lines about the project');
+    const err = $('f-err');
+    if (missing.length) {
+      err.textContent = 'Please add ' + (missing.length > 1 ? missing.slice(0, -1).join(', ') + ' and ' + missing.at(-1) : missing[0]) + '.';
+      err.hidden = false; return;
+    }
+    err.hidden = true;
+    const needs = [...form.querySelectorAll('input[name="need"]:checked')].map(i => i.value);
+    const lines = [
+      'Project brief for Minimal Technologies', '',
+      'Name: ' + v('f-name'),
+      v('f-org') ? 'Organisation: ' + v('f-org') : null,
+      'Contact: ' + v('f-contact'),
+      'Needs: ' + (needs.length ? needs.join(', ') : 'Not sure yet'),
+      'Timeline: ' + $('f-time').value,
+      v('f-budget') ? 'Budget: ' + v('f-budget') : null,
+      '', 'About the project:', v('f-about')
+    ].filter(x => x !== null);
+    $('brief-text').textContent = lines.join('\n');
+    $('brief-out').hidden = false;
+    layout();
+    const y = offsetIn($('brief-out'), pages[active]) - paneH * 0.35;
+    window.scrollTo({ top: Math.min(maxScroll, Math.max(0, y)), behavior: reduce ? 'auto' : 'smooth' });
+  });
+
+  const clock = $('r-clock'), depth = $('r-depth');
+  setInterval(() => { clock.textContent = new Date().toISOString().slice(11, 19); }, 1000);
+  clock.textContent = new Date().toISOString().slice(11, 19);
+
+  // Grid: drawn on a full-window canvas, projected with the glass's own 3D transform,
+  // so every cell is the same size on the glass and every line stays a crisp 1px.
+  // It is offset by the page position, so the grid travels with the glass when you change page.
+  const gridCv = $('grid'), g = gridCv.getContext('2d');
+  const CELL = 64;
+  let gridKey = '';
+  function drawGrid() {
+    const tf = getComputedStyle(plane).transform;
+    const vw = innerWidth, vh = innerHeight;
+    const off = ((panX % CELL) + CELL) % CELL;
+    const key = tf + '|' + vw + 'x' + vh + '|' + off.toFixed(1);
+    if (key === gridKey || tf === 'none') return;
+    gridKey = key;
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    if (gridCv.width !== Math.round(vw * dpr) || gridCv.height !== Math.round(vh * dpr)) {
+      gridCv.width = Math.round(vw * dpr); gridCv.height = Math.round(vh * dpr);
+    }
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, vw, vh);
+
+    const M = new DOMMatrix(tf);
+    const W = plane.offsetWidth, H = plane.offsetHeight, x0 = plane.offsetLeft, y0 = plane.offsetTop;
+    const ox = x0 + W * 0.5, oy = y0 + H * 0.55;              // transform-origin: 50% 55%
+    const d = parseFloat(getComputedStyle(rig).perspective) || 1300;
+    const px = vw * 0.5, py = vh * 0.4;                        // perspective-origin: 50% 40%
+    const world = (u, v) => { const q = M.transformPoint(new DOMPoint(u - W * 0.5, v - H * 0.55, 0)); return [q.x + ox, q.y + oy, q.z]; };
+    const NEAR = 80;
+    const LEVELS = 6, paths = Array.from({ length: LEVELS }, () => new Path2D());
+    function seg(a, b) {
+      let wa = d - a[2], wb = d - b[2];
+      if (wa < NEAR && wb < NEAR) return;
+      if (wa < NEAR) { const t = (NEAR - wa) / (wb - wa); a = a.map((c, i) => c + (b[i] - c) * t); wa = NEAR; }
+      else if (wb < NEAR) { const t = (NEAR - wb) / (wa - wb); b = b.map((c, i) => c + (a[i] - c) * t); wb = NEAR; }
+      const sa = d / wa, sb = d / wb, sm = (sa + sb) / 2;
+      // fade lines as they recede toward the horizon so they don't pile up into a bright band
+      const lvl = Math.max(0, Math.min(LEVELS - 1, Math.floor((sm - 0.25) / 0.6 * LEVELS)));
+      const path = paths[lvl];
+      path.moveTo(px + (a[0] - px) * sa, py + (a[1] - py) * sa);
+      path.lineTo(px + (b[0] - px) * sb, py + (b[1] - py) * sb);
+    }
+    const u0 = Math.floor(-3 * W / CELL) * CELL, u1 = Math.ceil(4 * W / CELL) * CELL;
+    const v0 = Math.floor(-2.5 * H / CELL) * CELL, v1 = Math.ceil(3 * H / CELL) * CELL;
+    const CH = CELL * 4;
+    for (let v = v0; v <= v1; v += CELL) seg(world(u0, v), world(u1, v));
+    for (let u = u0 - off; u <= u1; u += CELL)
+      for (let v = v0; v < v1; v += CH) seg(world(u, v), world(u, Math.min(v1, v + CH)));
+    g.lineWidth = 1;
+    for (let i = 0; i < LEVELS; i++) {
+      g.strokeStyle = `rgba(63, 232, 196, ${(0.025 + 0.085 * (i + 1) / LEVELS).toFixed(3)})`;
+      g.stroke(paths[i]);
+    }
+  }
+
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function frame(now) {
+    let swing = 0, dir = 0;
+    if (anim) {
+      const t = Math.min(1, (now - anim.t0) / anim.dur);
+      panX = anim.from + (anim.to - anim.from) * ease(t);
+      swing = Math.sin(Math.PI * t); dir = anim.dir;
+      if (t >= 1) { anim = null; panX = active * stride; finishNav(); }
+    }
+    const k = reduce ? 1 : 0.11;
+    cur += (target - cur) * k;
+    if (Math.abs(target - cur) < 0.05) cur = target;
+    cmx += (mx - cmx) * 0.07; cmy += (my - cmy) * 0.06;
+
+    pages.forEach((p, i) => {
+      const x = i * stride - panX;
+      const show = Math.abs(x) < trackW * 2.2;
+      if (p._show !== show) { p.style.visibility = show ? 'visible' : 'hidden'; p._show = show; }
+      if (show) p.style.transform = `translate3d(${x.toFixed(1)}px, ${(-(i === active ? cur : ys[i])).toFixed(1)}px, 0)`;
+    });
+
+    // mid-swipe the glass eases back a little and turns slightly toward where it's going
+    const s = Math.max(-1, Math.min(1, -2 * cmx)).toFixed(4);
+    const dz = (-swing * 140).toFixed(1), turn = (swing * dir * 3).toFixed(3);
+    plane.style.transform = `translateZ(${dz}px) rotateX(calc(var(--rx) + ${(-cmy * 4).toFixed(3)}deg)) rotateY(calc(var(--ry) * ${s} + ${turn}deg)) rotateZ(calc(var(--rz) * ${s}))`;
+    drawGrid();
+    depth.textContent = String(Math.round(cur)).padStart(4, '0');
+    requestAnimationFrame(frame);
+  }
+
+
+  // power-on intro, modelled on the reference video
+  function boot() {
+    const root = document.documentElement;
+    if (reduce || !root.classList.contains('boot-pending')) { root.classList.remove('boot-pending'); return; }
+    const veil = $('veil'), streak = $('streak'), touched = [];
+    const flick = (el, delay, dur) => {
+      if (!el) return;
+      el.style.setProperty('--d', delay + 'ms');
+      if (dur) el.style.setProperty('--fd', dur + 'ms');
+      el.classList.add('flick'); touched.push(el);
+    };
+    veil.hidden = false; streak.hidden = false;
+    root.classList.add('booting');
+    root.classList.remove('boot-pending');
+
+    flick($('grid'), 440, 1100);
+    flick(document.querySelector('.corner.tl'), 520, 600);
+    flick(document.querySelector('.corner.tr'), 580, 600);
+    flick(document.querySelector('.brand'), 600, 800);
+    flick($('steps'), 680, 900);
+    flick(document.querySelector('.readout.l'), 820, 700);
+    flick(document.querySelector('.readout.r'), 900, 700);
+    flick(beam, 1250, 700);
+
+    // the visible part of the current page: first two sections, block by block
+    const items = [];
+    pages[active].querySelectorAll(':scope > section:nth-of-type(-n+2) > *').forEach(el => {
+      if (el.matches('.mods, .specs, .points, .btns, .svc-list, .rule')) items.push(...el.children);
+      else items.push(el);
+    });
+    items.slice(0, 16).forEach((el, i) => flick(el, 760 + i * 80, 760));
+
+    setTimeout(() => {
+      root.classList.remove('booting');
+      veil.hidden = true; streak.hidden = true;
+      touched.forEach(el => { el.classList.remove('flick'); el.style.removeProperty('--d'); el.style.removeProperty('--fd'); });
+    }, 2900);
+  }
+
+  setInert();
+  layout();
+  boot();
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(layout);
+  requestAnimationFrame(frame);
+})();
+</script>
